@@ -1,0 +1,17 @@
+{
+    "name": "learning-node",
+    "version": "1.0.0",
+    "description": "Learning node with Mosh",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Jean Loureiro",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.16.4",
+        "joi": "^14.3.1",
+        "mongoose": "^5.4.16",
+        "underscore": "^1.9.1"
+    }
+}
