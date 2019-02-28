@@ -36,7 +36,10 @@ async function getCourses(){
     
     return await Course
     .find({ isPublished: true })
-    .or([{ tags: 'frontend'}, { tags:'backend' }])
+    .or([
+        { price: {$gte: 15} }, 
+        { name: /.*by.*/i }
+    ])
     // .find({
         // name: /^react/i
         // name: /.*react.*/i
@@ -46,7 +49,7 @@ async function getCourses(){
     // .sort({ price: -1 }) // 1 or -1
     .sort('-price') // -price or price
     // .select({ name: 1, author: 1 })
-    .select('name author')
+    .select('name author price')
     // .countDocuments()
 
     // console.log(courses)
