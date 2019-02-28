@@ -35,15 +35,18 @@ async function getCourses(){
     const pageSize = 10
     
     return await Course
-    .find({ isPublished: true, tags: 'backend'})
+    .find({ isPublished: true })
+    .or([{ tags: 'frontend'}, { tags:'backend' }])
     // .find({
         // name: /^react/i
         // name: /.*react.*/i
     // })
     // .skip(( pageNumber -1 ) * pageSize) // pagination
     // .limit(pageSize)
-    .sort({ name: 1 }) // 1 or -1
-    .select({ name: 1, author: 1 })
+    // .sort({ price: -1 }) // 1 or -1
+    .sort('-price') // -price or price
+    // .select({ name: 1, author: 1 })
+    .select('name author')
     // .countDocuments()
 
     // console.log(courses)
