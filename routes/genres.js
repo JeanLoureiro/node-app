@@ -3,19 +3,16 @@ const express = require('express')
 const router = express.Router()
 
 
-
-
 router.get('/', async (req, res) => {
     const genres = await Genre.find().sort('name')
     res.send(genres)
 })
 
 router.get('/:id', async (req, res) => {
-    // const course = courses.find( c => c.id === parseInt(req.params.id ))
     
     const genre = await Genre.findById(req.params.id)
 
-    if ( ! genre ) return res.status(404).send(`The course with the given ID ${req.params.id} was not found`)
+    if ( ! genre ) return res.status(404).send(`The genre with the given ID ${req.params.id} was not found`)
 
     res.send(genre)
 })
@@ -35,9 +32,6 @@ router.post('/', async (req, res) => {
 })
 
 router.put('/:id', async (req, res) => {
-
-    // const course = courses.find( c => c.id === parseInt(req.params.id ))
-    // if ( !course ) return res.status(404).send(`The course with the given ID ${req.params.id} was not found`)
     
     const { error } = validate(req.body)
     if(error) return res.status(400).send(error.details[0].message)
@@ -46,7 +40,7 @@ router.put('/:id', async (req, res) => {
         new: true
     } )
 
-    if ( ! genre ) return res.status(404).send(`The course with the given ID ${req.params.id} was not found`)
+    if ( ! genre ) return res.status(404).send(`The genre with the given ID ${req.params.id} was not found`)
 
     res.send(genre)
 

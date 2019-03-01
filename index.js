@@ -7,6 +7,7 @@ const app = express()
 const courses = require('./routes/courses')
 const genres = require('./routes/genres')
 const customers = require('./routes/customers')
+const movies = require('./routes/movies')
 const home = require('./routes/home')
 
 mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
@@ -25,6 +26,7 @@ app.use('/', home)
 app.use('/api/courses', courses)
 app.use('/api/genres', genres)
 app.use('/api/customers', customers)
+app.use('/api/movies', movies)
 
 debug(config.get('name'))
 
