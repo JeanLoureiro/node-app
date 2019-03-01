@@ -2,3 +2,5 @@ node_modules/
 yarn.lock
 promise.js
 customer.js
+population.js
+embedding.js
