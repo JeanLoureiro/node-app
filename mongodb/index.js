@@ -5,29 +5,71 @@ mongoose.connect('mongodb://localhost/playground', { useNewUrlParser: true })
     .catch(err => console.error('Could not connect to mongo db ', err))
 
 const courseSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 100
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: ['web', 'frontend', 'backend']
+    },
     author: String,
-    tags: [String],
+    tags: {
+        type: Array,
+        validate: {
+            isAsync: true,
+            validator: function (v, cb) {
+                setTimeout(() => {
+                    const result = v && v.length > 0
+                    cb(result)
+                }, 1000)
+            },
+            messsage: 'A course should have at least 1 tag.'
+
+        }
+    },
     // date: { type: Date, default: Date.now },
     date: Date,
-    isPublished: Boolean
+    isPublished: Boolean,
+    price: {
+        type: Number,
+        min: 10,
+        max: 200,
+        required: function () { return this.isPublished }, // only required if isPublished is true
+        get: v => Math.round(v),
+        set: v => Math.round(v)
+    }
 })
 
 const Course = mongoose.model('Course', courseSchema)
 
-// async function createCourse(){
-//     const course = new Course({
-//         name: 'Reactjs Course',
-//         author: 'Jean',
-//         tags: ['react', 'front end'],
-//         isPublished: true
-//     })
+async function createCourse() {
+    const course = new Course({
+        name: 'Reactjs Course',
+        author: 'Jean',
+        category: '-',
+        tags: ['react', 'front end'],
+        isPublished: true,
+        price: 15
+    })
 
-//     const result = await course.save()
-//     console.log(result)
-// }
+    try {
+        const result = await course.save()
+        console.log(result)
+    }
+    catch (err) {
+        for (field in err.errors){
+            console.log(err.errors[field].message)
+        }
+    }
 
-// createCourse()
+
+}
+
+createCourse()
 
 async function getCourses() {
 
@@ -74,19 +116,18 @@ async function updateCourse(id) {
     //     }
     // })
     console.log(id)
-    const course = await Course.findByIdAndUpdate(id, 
+    const course = await Course.findByIdAndUpdate(id,
         {
             $set: {
                 isPublished: true,
                 author: 'Maria Jose'
             }
 
-        }, { new: true}
+        }, { new: true }
     )
 
     console.log(course)
 
-    // Update first
 }
 
 // updateCourse('5a68ff090c553064a218a547')
@@ -94,11 +135,10 @@ async function updateCourse(id) {
 
 async function removeCourse(id) {
 
-    const result = await Course.deleteOne({_id : id})
+    const result = await Course.deleteOne({ _id: id })
     // Course.findByIdAndRemove()
     console.log(result)
 
-    // Update first
 }
 
-removeCourse('5a68ff090c553064a218a547')
+// removeCourse('5a68ff090c553064a218a547')
