@@ -9,7 +9,10 @@
     "author": "Jean Loureiro",
     "license": "ISC",
     "dependencies": {
+        "config": "^3.0.1",
         "express": "^4.16.4",
+        "fawn": "^2.1.5",
+        "helmet": "^3.15.1",
         "joi": "^14.3.1",
         "mongoose": "^5.4.16",
         "underscore": "^1.9.1"

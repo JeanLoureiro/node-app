@@ -9,6 +9,7 @@ const genres = require('./routes/genres')
 const customers = require('./routes/customers')
 const movies = require('./routes/movies')
 const home = require('./routes/home')
+const rental = require('./routes/rentals')
 
 mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
     .then( () => console.log('Connected to MongoDB...'))
@@ -27,6 +28,7 @@ app.use('/api/courses', courses)
 app.use('/api/genres', genres)
 app.use('/api/customers', customers)
 app.use('/api/movies', movies)
+app.use('/api/rentals', rental)
 
 debug(config.get('name'))
 
