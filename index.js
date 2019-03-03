@@ -3,13 +3,18 @@ const debug = require('debug')('app:startup')
 const config = require('config')
 const helmet = require('helmet')
 const express = require('express')
-const app = express()
+const Joi = require('joi');
 const courses = require('./routes/courses')
 const genres = require('./routes/genres')
 const customers = require('./routes/customers')
 const movies = require('./routes/movies')
 const home = require('./routes/home')
-const rental = require('./routes/rentals')
+const rentals = require('./routes/rentals')
+const users = require('./routes/users')
+
+Joi.objectId = require('joi-objectid')(Joi)
+const app = express()
+
 
 mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
     .then( () => console.log('Connected to MongoDB...'))
@@ -28,7 +33,8 @@ app.use('/api/courses', courses)
 app.use('/api/genres', genres)
 app.use('/api/customers', customers)
 app.use('/api/movies', movies)
-app.use('/api/rentals', rental)
+app.use('/api/rentals', rentals)
+app.use('/api/users', users)
 
 debug(config.get('name'))
 
