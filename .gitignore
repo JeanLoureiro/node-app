@@ -5,3 +5,5 @@ customer.js
 embedding.js
 population.js
 promise.js
+error.log
+logger.js
