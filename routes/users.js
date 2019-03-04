@@ -1,13 +1,14 @@
 const { User, validate } = require('../models/user')
+const auth = require('../middleware/auth')
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
-const mongoose = require('mongoose')
+const config = require('config')
 const express = require('express')
 const router = express.Router()
 
-router.get('/', async (req, res) => {
-    const users = await User.find().sort('name')
-    res.send(users)
+router.get('/me', auth, async (req, res) => {
+    const user = User.findById(req.user._id).select('-password')
+    res.send(user)
 })
 
 router.post('/', async (req, res) => {
@@ -34,7 +35,8 @@ router.post('/', async (req, res) => {
 
     await user.save()
 
-    res.send(_.pick(user, ['id', 'name', 'email']))
+    const token = user.generateAuthToken()
+    res.header('x-auth-token', token).send(_.pick(user, ['id', 'name', 'email']))
 
 })
 
