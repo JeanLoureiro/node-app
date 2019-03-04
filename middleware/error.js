@@ -1,12 +1,12 @@
-const winston = require('winston')
+const { createLogger, transports, format } = require('winston')
 require('winston-mongodb')
 
-const logger = winston.createLogger({
+const logger = createLogger({
     level: 'error',
-    format: winston.format.json(),
+    format: format.json(),
     transports: [
-        new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        new winston.transports.MongoDB({ 
+        new transports.File({ filename: 'error.log', level: 'error' }),
+        new transports.MongoDB({ 
             db: 'mongodb://localhost/vidly' , 
             options:{
                 useNewUrlParser: true
@@ -15,18 +15,11 @@ const logger = winston.createLogger({
     ]
 });
 
-
 module.exports = function(err, req, res, next){
-    logger.error( err )
+    
+    logger.error( err.message )
     
     res.status(500).send('Something failed')
 }
-
-process.on('uncaughtException', (ex) => {
-    logger.error(ex.message)
-    // process.exit(1)
-} )
-
-process.on('unhandledRejection', (ex) => { throw ex })
 
 exports.logger = logger

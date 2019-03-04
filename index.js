@@ -1,54 +1,26 @@
-require('express-async-errors')
-const winston = require('winston')
-require('winston-mongodb')
-const mongoose = require('mongoose')
-const debug = require('debug')('app:startup')
-const config = require('config')
-const helmet = require('helmet')
+const { createLogger, format, transports } = require('winston')
 const express = require('express')
-const Joi = require('joi');
-const error = require('./middleware/error')
-const courses = require('./routes/courses')
-const genres = require('./routes/genres')
-const customers = require('./routes/customers')
-const movies = require('./routes/movies')
-const home = require('./routes/home')
-const rentals = require('./routes/rentals')
-const users = require('./routes/users')
-const auth = require('./routes/auth')
-
-if (!config.get('jwtPrivateKey')) {
-    console.error('FATAL ERROR: jwtPrivateKey is not defined.')
-    process.exit(1)
-}
-
-Joi.objectId = require('joi-objectid')(Joi)
 const app = express()
 
-mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
-    .then(() => console.log('Connected to MongoDB...'))
-    .catch(err => console.error('Could not connect to MongoDB'))
+// const debug = require('debug')('app:startup')
+// debug(config.get('name'))
+
+require('./startup/logging')()
+require('./startup/routes')(app)
+require('./startup/db')()
+require('./startup/config')()
+require('./startup/validation')()
 
 const port = process.env.PORT || '3000'
 
 app.set('view engine', 'pug')
 app.set('views', './views') //default
 
-app.use(express.json())
-app.use(helmet())
-app.use(express.static('public'))
-app.use('/', home)
-app.use('/api/courses', courses)
-app.use('/api/genres', genres)
-app.use('/api/customers', customers)
-app.use('/api/movies', movies)
-app.use('/api/rentals', rentals)
-app.use('/api/users', users)
-app.use('/api/auth', auth)
+const logger = createLogger({
+    format: format.simple(),
+    transports: [
+        new transports.Console(),
+    ]
+});
 
-app.use(error)
-debug(config.get('name'))
-
-app.listen(port, () => {
-    console.log(`Listening on port ${port}`)
-})
+app.listen(port, () => logger.log('info', `Listening on port ${port}`) )
