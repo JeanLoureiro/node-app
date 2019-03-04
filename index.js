@@ -1,9 +1,12 @@
+require('express-async-errors')
+const winston = require('winston')
 const mongoose = require('mongoose')
 const debug = require('debug')('app:startup')
 const config = require('config')
 const helmet = require('helmet')
 const express = require('express')
 const Joi = require('joi');
+const error = require('./middleware/error')
 const courses = require('./routes/courses')
 const genres = require('./routes/genres')
 const customers = require('./routes/customers')
@@ -13,18 +16,19 @@ const rentals = require('./routes/rentals')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
 
-Joi.objectId = require('joi-objectid')(Joi)
-const app = express()
+winston.add(winston.transports.File, { filename: 'logfile.log' })
 
-if ( ! config.get('jwtPrivateKey') ) {
+if (!config.get('jwtPrivateKey')) {
     console.error('FATAL ERROR: jwtPrivateKey is not defined.')
     process.exit(1)
 }
 
+Joi.objectId = require('joi-objectid')(Joi)
+const app = express()
 
 mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
-    .then( () => console.log('Connected to MongoDB...'))
-    .catch( err => console.error('Could not connect to MongoDB'))
+    .then(() => console.log('Connected to MongoDB...'))
+    .catch(err => console.error('Could not connect to MongoDB'))
 
 const port = process.env.PORT || '3000'
 
@@ -43,6 +47,7 @@ app.use('/api/rentals', rentals)
 app.use('/api/users', users)
 app.use('/api/auth', auth)
 
+app.use(error)
 debug(config.get('name'))
 
 app.listen(port, () => {
