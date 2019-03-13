@@ -23,4 +23,6 @@ const logger = createLogger({
     ]
 });
 
-app.listen(port, () => logger.log('info', `Listening on port ${port}`) )
+const server = app.listen(port, () => logger.log('info', `Listening on port ${port}`) )
+
+module.exports = server

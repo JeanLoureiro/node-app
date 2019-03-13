@@ -1,6 +1,6 @@
 require('express-async-errors')
 const { createLogger, transports, format } = require('winston')
-require('winston-mongodb')
+// require('winston-mongodb')
 
 const logger = createLogger({
     level: 'error',
